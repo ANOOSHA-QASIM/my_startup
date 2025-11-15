@@ -21,18 +21,53 @@ import {
   CardTitle,
 } from "@/components/ui/Card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
-import { Building2, Phone, Bot, Sparkles } from "lucide-react";
+import {
+  Building2,
+  Phone,
+  Bot,
+  Sparkles,
+  List,
+  Trash2,
+  Plus,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toasts";
+import { firestore } from "@/../lib/firebaseClient";
+import { collection, addDoc } from "firebase/firestore";
 
 const BusinessSetup = () => {
   const router = useRouter();
   const [businessName, setBusinessName] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [botPurpose, setBotPurpose] = useState("");
-  const [botCategory, setBotCategory] = useState(""); // ✅ Add Bot Category
+  const [botCategory, setBotCategory] = useState("");
+  const [itemType, setItemType] = useState(""); // ✅ Menu / Services / Product / Other
+  const [otherDescription, setOtherDescription] = useState(""); // ✅ For "Other"
+  const [menuItems, setMenuItems] = useState([{ name: "", price: "" }]);
   const [plan, setPlan] = useState("free");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+
+  // ✅ Update item name or price
+  const handleItemChange = (
+    index: number,
+    field: "name" | "price",
+    value: string
+  ) => {
+    const newItems = [...menuItems];
+    newItems[index][field] = value;
+    setMenuItems(newItems);
+  };
+
+  // ✅ Add new item
+  const addMenuItem = () => {
+    setMenuItems([...menuItems, { name: "", price: "" }]);
+  };
+
+  // ✅ Remove item
+  const removeMenuItem = (index: number) => {
+    const newItems = menuItems.filter((_, i) => i !== index);
+    setMenuItems(newItems);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,35 +83,66 @@ const BusinessSetup = () => {
 
     setLoading(true);
 
-    // ✅ Simulate API / n8n webhook
-    setTimeout(() => {
+    try {
+      // ✅ Generate unique bot data
       const botData = {
-        botId: "BOT-" + Math.random().toString(36).substring(2, 9).toUpperCase(),
+        botId:
+          "BOT-" + Math.random().toString(36).substring(2, 9).toUpperCase(),
         webhookUrl: `https://api.whatsappbot.com/webhook/${Math.random()
           .toString(36)
           .substring(2, 9)}`,
-        botCategory, // ✅ Pass category
+        botCategory,
       };
-      setLoading(false);
+
+      // ✅ Save to Firestore
+      const docRef = await addDoc(collection(firestore, "businesses"), {
+        businessName,
+        whatsappNumber,
+        botPurpose,
+        botCategory,
+        itemType,
+        otherDescription,
+        menuItems, // full array of name & price
+        plan,
+        botId: botData.botId,
+        webhookUrl: botData.webhookUrl,
+        createdAt: new Date(),
+      });
 
       toast({
         title: "🎉 Bot Created!",
-        description: "Now connect it with WhatsApp",
+        description: "Your WhatsApp Bot has been saved successfully.",
       });
 
-      // ✅ Redirect with botData as query params
-      router.push(
-        `/bot-connection?botId=${botData.botId}&webhookUrl=${botData.webhookUrl}&botCategory=${botData.botCategory}`
-      );
-    }, 2000);
+      router.push(`/bot-connection?businessId=${docRef.id}`);
+    } catch (error: any) {
+      console.error("Error creating bot:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Something went wrong!",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-20 lg:ml-64 p-6">
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="ml-20 lg:ml-64 p-6"
+      >
         <div className="max-w-4xl mx-auto">
-          <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-2">Business Setup</h1>
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="mb-8"
+          >
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Business Setup
+            </h1>
             <p className="text-muted-foreground">
               Configure your WhatsApp Bot for your business
             </p>
@@ -85,19 +151,19 @@ const BusinessSetup = () => {
           <Card className="shadow-card">
             <CardHeader>
               <CardTitle>Bot Configuration</CardTitle>
-              <CardDescription>Set up your automated WhatsApp assistant</CardDescription>
+              <CardDescription>
+                Set up your automated WhatsApp assistant
+              </CardDescription>
             </CardHeader>
 
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Business Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="business-name">
-                    <Building2 className="inline h-4 w-4 mr-2" />
-                    Business Name
+                  <Label>
+                    <Building2 className="inline h-4 w-4 mr-2" /> Business Name
                   </Label>
                   <Input
-                    id="business-name"
                     placeholder="Enter your business name"
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
@@ -107,13 +173,11 @@ const BusinessSetup = () => {
 
                 {/* WhatsApp Number */}
                 <div className="space-y-2">
-                  <Label htmlFor="whatsapp-number">
-                    <Phone className="inline h-4 w-4 mr-2" />
-                    WhatsApp Number
+                  <Label>
+                    <Phone className="inline h-4 w-4 mr-2" /> WhatsApp Number
                   </Label>
                   <Input
-                    id="whatsapp-number"
-                    placeholder="+1234567890"
+                    placeholder="+923001234567"
                     value={whatsappNumber}
                     onChange={(e) => setWhatsappNumber(e.target.value)}
                     required
@@ -122,29 +186,36 @@ const BusinessSetup = () => {
 
                 {/* Bot Purpose */}
                 <div className="space-y-2">
-                  <Label htmlFor="bot-purpose">
-                    <Bot className="inline h-4 w-4 mr-2" />
-                    Bot Purpose
+                  <Label>
+                    <Bot className="inline h-4 w-4 mr-2" /> Bot Purpose
                   </Label>
                   <Select value={botPurpose} onValueChange={setBotPurpose}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select bot purpose" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="customer-support">Customer Support</SelectItem>
-                      <SelectItem value="sales">Sales & Lead Generation</SelectItem>
-                      <SelectItem value="appointments">Appointment Booking</SelectItem>
-                      <SelectItem value="order-tracking">Order Tracking</SelectItem>
+                      <SelectItem value="customer-support">
+                        Customer Support
+                      </SelectItem>
+                      <SelectItem value="sales">
+                        Sales & Lead Generation
+                      </SelectItem>
+                      <SelectItem value="appointments">
+                        Appointment Booking
+                      </SelectItem>
+                      <SelectItem value="order-tracking">
+                        Order Tracking
+                      </SelectItem>
                       <SelectItem value="faq">FAQ & Information</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                {/* ✅ Bot Category */}
+                {/* Bot Category */}
                 <div className="space-y-2">
-                  <Label htmlFor="bot-category">
-                    <Bot className="inline h-4 w-4 mr-2" />
-                    Bot Category / Business Type
+                  <Label>
+                    <Bot className="inline h-4 w-4 mr-2" /> Bot Category /
+                    Business Type
                   </Label>
                   <Select value={botCategory} onValueChange={setBotCategory}>
                     <SelectTrigger>
@@ -161,17 +232,94 @@ const BusinessSetup = () => {
                   </Select>
                 </div>
 
+                {/* ✅ Item Type */}
+                <div className="space-y-2">
+                  <Label>
+                    <List className="inline h-4 w-4 mr-2" /> Item Type
+                  </Label>
+                  <Select value={itemType} onValueChange={setItemType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="menu">Menu</SelectItem>
+                      <SelectItem value="service">Service</SelectItem>
+                      <SelectItem value="product">Product</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* ✅ If "Other" selected */}
+                {itemType === "other" && (
+                  <div className="space-y-2">
+                    <Label>Describe your item type</Label>
+                    <Input
+                      placeholder="Enter your custom type"
+                      value={otherDescription}
+                      onChange={(e) => setOtherDescription(e.target.value)}
+                    />
+                  </div>
+                )}
+
+                {/* ✅ Menu Listing with Price */}
+                <div className="space-y-3">
+                  <Label>
+                    <List className="inline h-4 w-4 mr-2" /> Items with Price
+                  </Label>
+                  {menuItems.map((item, index) => (
+                    <div key={index} className="flex gap-3">
+                      <Input
+                        placeholder="Item name (e.g. Pizza)"
+                        value={item.name}
+                        onChange={(e) =>
+                          handleItemChange(index, "name", e.target.value)
+                        }
+                      />
+                      <Input
+                        placeholder="Price (e.g. 500)"
+                        value={item.price}
+                        onChange={(e) =>
+                          handleItemChange(index, "price", e.target.value)
+                        }
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={() => removeMenuItem(index)}
+                        className="px-3"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button type="button" variant="outline" onClick={addMenuItem}>
+                    <Plus className="h-4 w-4 mr-2" /> Add Item
+                  </Button>
+                </div>
+
                 {/* Plan */}
                 <div className="space-y-3">
                   <Label>
-                    <Sparkles className="inline h-4 w-4 mr-2" />
-                    Select Plan
+                    <Sparkles className="inline h-4 w-4 mr-2" /> Select Plan
                   </Label>
                   <RadioGroup value={plan} onValueChange={setPlan}>
                     {[
-                      { id: "free", title: "Free Plan", desc: "100 messages/month" },
-                      { id: "paid", title: "Paid Plan", desc: "Unlimited messages" },
-                      { id: "premium", title: "Premium Plan", desc: "AI-powered replies" },
+                      {
+                        id: "free",
+                        title: "Free Plan",
+                        desc: "100 messages/month",
+                      },
+                      {
+                        id: "paid",
+                        title: "Paid Plan",
+                        desc: "Unlimited messages",
+                      },
+                      {
+                        id: "premium",
+                        title: "Premium Plan",
+                        desc: "AI-powered replies",
+                      },
                     ].map((p) => (
                       <div
                         key={p.id}
@@ -180,7 +328,9 @@ const BusinessSetup = () => {
                         <RadioGroupItem value={p.id} id={p.id} />
                         <Label htmlFor={p.id} className="cursor-pointer flex-1">
                           <span className="font-medium">{p.title}</span>
-                          <span className="block text-sm text-muted-foreground">{p.desc}</span>
+                          <span className="block text-sm text-muted-foreground">
+                            {p.desc}
+                          </span>
                         </Label>
                       </div>
                     ))}

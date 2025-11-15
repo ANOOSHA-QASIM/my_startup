@@ -1,5 +1,5 @@
 "use client";
-
+import { useUser } from "@clerk/nextjs"; // ✅ Clerk hook
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -8,8 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/Card"; // ✅ lowercase 'card'
-
+} from "@/components/ui/Card";
 import {
   Activity,
   CheckCircle,
@@ -23,7 +22,6 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-// ✅ Type interface for bot status
 interface BotStatus {
   isActive: boolean;
   messagesHandled: number;
@@ -34,7 +32,8 @@ interface BotStatus {
 }
 
 const Dashboard = () => {
-  const router = useRouter(); // ✅ correct usage
+  const router = useRouter();
+  const { user } = useUser(); // ✅ Clerk user data
   const [botStatus, setBotStatus] = useState<BotStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("User");
@@ -42,34 +41,36 @@ const Dashboard = () => {
   useEffect(() => {
     fetchBotStatus();
 
-    // ✅ Get user data from localStorage
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      const user = JSON.parse(userData);
-      setUserName(user.name || "User");
+    // ✅ Clerk user data ya localStorage data
+    if (user) {
+      setUserName(user.firstName || user.fullName || user.emailAddresses[0]?.emailAddress.split("@")[0]);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ name: user.firstName || user.fullName || "User" })
+      );
+    } else {
+      const localUser = localStorage.getItem("user");
+      if (localUser) {
+        setUserName(JSON.parse(localUser).name);
+      }
     }
-  }, []);
+  }, [user]);
 
-  // ✅ Dummy fetch simulation
+  // ✅ Dummy API
   const fetchBotStatus = async () => {
-    try {
-      // Simulate API delay
-      setTimeout(() => {
-        setBotStatus({
-          isActive: true,
-          messagesHandled: 1247,
-          activeConversations: 23,
-          totalCustomers: 458,
-          responseTime: "< 1 sec",
-          uptime: "99.9%",
-        });
-        setLoading(false);
-      }, 1000);
-    } catch (error) {
-      console.error("Failed to fetch bot status:", error);
+    setTimeout(() => {
+      setBotStatus({
+        isActive: true,
+        messagesHandled: 1247,
+        activeConversations: 23,
+        totalCustomers: 458,
+        responseTime: "< 1 sec",
+        uptime: "99.9%",
+      });
       setLoading(false);
-    }
+    }, 1000);
   };
+
 
   // ✅ Framer Motion Variants
   const containerVariants = {

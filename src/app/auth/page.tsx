@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/Tabs";
 import { MessageCircle, Bot, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toasts";
+import { useSignIn, useSignUp } from "@clerk/nextjs";
 
 const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,13 +30,20 @@ const AuthPage = () => {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
   const { toast } = useToast();
 
-  // ✅ Validation Helpers
+  const { signIn, isLoaded: signInLoaded } = useSignIn();
+  const { signUp, isLoaded: signUpLoaded } = useSignUp();
+
+  // ✅ Validation
   const validateSignup = () => {
     const newErrors: Record<string, string> = {};
+    if (!firstName) newErrors.firstName = "First name is required";
+    if (!lastName) newErrors.lastName = "Last name is required";
     if (!signupEmail) newErrors.signupEmail = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(signupEmail))
       newErrors.signupEmail = "Invalid email format";
@@ -60,23 +68,42 @@ const AuthPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ Signup Logic
+  // ✅ Email Signup
   const handleSignup = async () => {
     if (!validateSignup()) return;
+    if (!signUpLoaded) return;
+
     setIsLoading(true);
     try {
-      setTimeout(() => {
-        localStorage.setItem("user", JSON.stringify({ email: signupEmail }));
-        toast({
-          title: "Account created!",
-          description: "Welcome to OrderZap",
-        });
-        router.push("/dashboard");
-      }, 1500);
-    } catch {
+      await signUp.create({
+        emailAddress: signupEmail,
+        password: signupPassword,
+        firstName,
+        lastName,
+      });
+
+      // ✅ Send verification code
+      await signUp.prepareEmailAddressVerification({
+        strategy: "email_code",
+       // 👈 add redirect URL required by Clerk
+      });
+
+      // Save user locally
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ name: firstName + " " + lastName })
+      );
+
+      toast({
+        title: "Verify your email ✉️",
+        description: "We’ve sent you a verification code.",
+      });
+
+      router.push("/verify-email");
+    } catch (err: any) {
       toast({
         title: "Signup failed",
-        description: "Please try again later",
+        description: err.errors?.[0]?.message || "Please try again later",
         variant: "destructive",
       });
     } finally {
@@ -84,23 +111,38 @@ const AuthPage = () => {
     }
   };
 
-  // ✅ Login Logic
+  // ✅ Email Login
   const handleLogin = async () => {
     if (!validateLogin()) return;
+    if (!signInLoaded) return;
+
     setIsLoading(true);
     try {
-      setTimeout(() => {
-        localStorage.setItem("user", JSON.stringify({ email: loginEmail }));
+      const result = await signIn.create({
+        identifier: loginEmail,
+        password: loginPassword,
+      });
+
+      if (result.status === "complete") {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ name: loginEmail })
+        );
         toast({
-          title: "Welcome back!",
-          description: "Successfully logged in",
+          title: "Welcome back! 👋",
+          description: "You’ve successfully logged in.",
         });
         router.push("/dashboard");
-      }, 1500);
-    } catch {
+      } else {
+        toast({
+          title: "Verification needed",
+          description: "Please verify your email.",
+        });
+      }
+    } catch (err: any) {
       toast({
         title: "Login failed",
-        description: "Invalid credentials",
+        description: err.errors?.[0]?.message || "Invalid credentials",
         variant: "destructive",
       });
     } finally {
@@ -108,28 +150,51 @@ const AuthPage = () => {
     }
   };
 
+  // ✅ Google OAuth Login/Signup
+  const handleGoogleAuth = async (mode: "login" | "signup") => {
+    try {
+      const redirectUrl = "/dashboard";
+      const redirectUrlComplete = "/dashboard";
+
+      if (mode === "login" && signInLoaded) {
+        await signIn.authenticateWithRedirect({
+          strategy: "oauth_google",
+          redirectUrl,
+          redirectUrlComplete,
+        });
+      } else if (mode === "signup" && signUpLoaded) {
+        await signUp.authenticateWithRedirect({
+          strategy: "oauth_google",
+          redirectUrl,
+          redirectUrlComplete,
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Google Auth failed",
+        description: error.errors?.[0]?.message || "Something went wrong",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // 🎨 Animations
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
   const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: "spring", stiffness: 100 },
-    },
+    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
   };
 
   return (
     <div className="min-h-screen bg-gradient-subtle flex items-center justify-center p-4 relative overflow-hidden">
-      {/* 🌟 Floating Icons Background */}
+      {/* Background Icons */}
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0 }}
@@ -153,17 +218,13 @@ const AuthPage = () => {
         <motion.div
           className="absolute top-1/2 right-20"
           animate={{ rotate: 360 }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear",
-          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         >
           <Sparkles className="h-16 w-16 text-primary/10" />
         </motion.div>
       </motion.div>
 
-      {/* 💫 Auth Card */}
+      {/* Auth Card */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -191,15 +252,21 @@ const AuthPage = () => {
             <CardContent>
               <Tabs defaultValue="login" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-muted/50 rounded-lg mb-4">
-                  <TabsTrigger value="login" className="data-[state=active]:bg-background data-[state=active]:text-primary">
+                  <TabsTrigger
+                    value="login"
+                    className="data-[state=active]:bg-background data-[state=active]:text-primary"
+                  >
                     Login
                   </TabsTrigger>
-                  <TabsTrigger value="signup" className="data-[state=active]:bg-background data-[state=active]:text-primary">
+                  <TabsTrigger
+                    value="signup"
+                    className="data-[state=active]:bg-background data-[state=active]:text-primary"
+                  >
                     Sign Up
                   </TabsTrigger>
                 </TabsList>
 
-                {/* 🔐 Login Form */}
+                {/* LOGIN FORM */}
                 <TabsContent value="login">
                   <motion.form
                     initial={{ opacity: 0, x: -20 }}
@@ -212,51 +279,39 @@ const AuthPage = () => {
                     className="space-y-4"
                   >
                     <div className="space-y-2">
-                      <Label htmlFor="login-email">Email</Label>
+                      <Label>Email</Label>
                       <Input
-                        id="login-email"
                         type="email"
                         placeholder="Enter your email"
                         value={loginEmail}
                         onChange={(e) => setLoginEmail(e.target.value)}
-                        className={errors.loginEmail ? "border-destructive" : ""}
                       />
-                      {errors.loginEmail && (
-                        <p className="text-sm text-destructive">
-                          {errors.loginEmail}
-                        </p>
-                      )}
                     </div>
-
                     <div className="space-y-2">
-                      <Label htmlFor="login-password">Password</Label>
+                      <Label>Password</Label>
                       <Input
-                        id="login-password"
                         type="password"
                         placeholder="Enter your password"
                         value={loginPassword}
                         onChange={(e) => setLoginPassword(e.target.value)}
-                        className={errors.loginPassword ? "border-destructive" : ""}
                       />
-                      {errors.loginPassword && (
-                        <p className="text-sm text-destructive">
-                          {errors.loginPassword}
-                        </p>
-                      )}
                     </div>
 
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      variant="gradient"
-                      disabled={isLoading}
-                    >
+                    <Button type="submit" className="w-full" variant="gradient">
                       {isLoading ? "Logging in..." : "Login"}
+                    </Button>
+
+                    <Button
+                      type="button"
+                      className="w-full mt-3 bg-white border text-black hover:bg-gray-100"
+                      onClick={() => handleGoogleAuth("login")}
+                    >
+                      Continue with Google
                     </Button>
                   </motion.form>
                 </TabsContent>
 
-                {/* 🧾 Signup Form */}
+                {/* SIGNUP FORM */}
                 <TabsContent value="signup">
                   <motion.form
                     initial={{ opacity: 0, x: 20 }}
@@ -268,64 +323,65 @@ const AuthPage = () => {
                     }}
                     className="space-y-4"
                   >
+                    <div className="flex gap-2">
+                      <div className="w-1/2">
+                        <Label>First Name</Label>
+                        <Input
+                          type="text"
+                          placeholder="First name"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                        />
+                      </div>
+                      <div className="w-1/2">
+                        <Label>Last Name</Label>
+                        <Input
+                          type="text"
+                          placeholder="Last name"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                        />
+                      </div>
+                    </div>
+
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
+                      <Label>Email</Label>
                       <Input
-                        id="signup-email"
                         type="email"
                         placeholder="Enter your email"
                         value={signupEmail}
                         onChange={(e) => setSignupEmail(e.target.value)}
-                        className={errors.signupEmail ? "border-destructive" : ""}
                       />
-                      {errors.signupEmail && (
-                        <p className="text-sm text-destructive">
-                          {errors.signupEmail}
-                        </p>
-                      )}
                     </div>
-
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password">Password</Label>
+                      <Label>Password</Label>
                       <Input
-                        id="signup-password"
                         type="password"
                         placeholder="Create a password"
                         value={signupPassword}
                         onChange={(e) => setSignupPassword(e.target.value)}
-                        className={errors.signupPassword ? "border-destructive" : ""}
                       />
-                      {errors.signupPassword && (
-                        <p className="text-sm text-destructive">
-                          {errors.signupPassword}
-                        </p>
-                      )}
                     </div>
-
                     <div className="space-y-2">
-                      <Label htmlFor="confirm-password">Confirm Password</Label>
+                      <Label>Confirm Password</Label>
                       <Input
-                        id="confirm-password"
                         type="password"
-                        placeholder="Confirm your password"
+                        placeholder="Confirm password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className={errors.confirmPassword ? "border-destructive" : ""}
                       />
-                      {errors.confirmPassword && (
-                        <p className="text-sm text-destructive">
-                          {errors.confirmPassword}
-                        </p>
-                      )}
                     </div>
 
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      variant="gradient"
-                      disabled={isLoading}
-                    >
+                    <Button type="submit" className="w-full" variant="gradient">
                       {isLoading ? "Creating account..." : "Sign Up"}
+                    </Button>
+
+                    <Button
+                      type="button"
+                      className="w-full mt-3 bg-white border text-black hover:bg-gray-100"
+                      onClick={() => handleGoogleAuth("signup")}
+                    >
+                      Sign up with Google
                     </Button>
                   </motion.form>
                 </TabsContent>
