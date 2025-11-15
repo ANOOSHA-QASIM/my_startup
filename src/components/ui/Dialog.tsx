@@ -1,6 +1,6 @@
 "use client"; // Required for Next.js interactive component
 
-import * as React from "react";
+
 import * as DialogPrimitive from "@radix-ui/react-dialog"; // Radix Dialog primitives
 import { X } from "lucide-react"; // Close icon
 import { cn } from "@/lib/utils"; // Utility for conditional classNames
