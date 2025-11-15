@@ -4,7 +4,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/ui/Label";
 
 // Form provider wrapper
 const Form = FormProvider;
@@ -16,7 +16,10 @@ type FormFieldContextValue<TFieldValues extends FieldValues = FieldValues, TName
 const FormFieldContext = React.createContext<FormFieldContextValue>({} as FormFieldContextValue);
 
 // FormField wrapper using Controller
-const FormField = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>(
+const FormField = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+>(
   props: ControllerProps<TFieldValues, TName>
 ) => (
   <FormFieldContext.Provider value={{ name: props.name }}>
@@ -60,8 +63,8 @@ const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
 });
 FormItem.displayName = "FormItem";
 
-// Label for a field
-const FormLabel = React.forwardRef<React.ElementRef<typeof Slot>, React.ComponentPropsWithoutRef<typeof Slot>>(({ className, ...props }, ref) => {
+// ✅ Fixed FormLabel ref type
+const FormLabel = React.forwardRef<HTMLLabelElement, React.ComponentPropsWithoutRef<typeof Label>>(({ className, ...props }, ref) => {
   const { error, formItemId } = useFormField();
   return <Label ref={ref} htmlFor={formItemId} className={cn(error && "text-destructive", className)} {...props} />;
 });

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/TextArea";
-import Sidebar from "@/components/Sidebar";
 import { Mail, Phone, Send, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toasts";
@@ -53,7 +52,6 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <Sidebar />
       
       <motion.main
         initial={{ opacity: 0 }}

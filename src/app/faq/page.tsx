@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/Accordian";
-import Sidebar from "@/components/Sidebar";
 import { HelpCircle, Bot, Link, Settings, RefreshCw, Shield, MessageSquare, Users } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
@@ -100,7 +99,6 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <Sidebar />
 
       <motion.main
         initial={{ opacity: 0 }}
