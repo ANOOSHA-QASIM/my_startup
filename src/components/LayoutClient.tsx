@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import ClientWrapper from "@/components/ClientWrapper";
-import NotFound from "@/app/not-found";
+
 
 
 
