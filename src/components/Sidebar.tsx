@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence, Variants } from "framer-motion";
+import Image from "next/image";
 import {
   LayoutDashboard,
   Building2,
@@ -56,15 +57,27 @@ const Sidebar = () => {
           <div className="p-4 flex items-center justify-between">
             <AnimatePresence>
               {isOpen && (
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="flex items-center gap-2"
-                >
-                  <Bot className="h-8 w-8" />
-                  <span className="font-bold text-lg">OrderZap</span>
-                </motion.div>
+<div className="flex items-center gap-2">
+  <Image
+  src="/logo.png"
+  alt="OrderZap Logo"
+  width={75}
+  height={75}
+  className="object-contain" // brightness increase
+/>
+
+  {isOpen && (
+    <motion.span
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -10 }}
+      className="font-bold text-lg whitespace-nowrap"
+    >
+      OrderZap
+    </motion.span>
+  )}
+</div>
+
               )}
             </AnimatePresence>
             <Button

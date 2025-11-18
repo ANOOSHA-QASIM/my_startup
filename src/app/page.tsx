@@ -3,8 +3,15 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   MessageSquare,
   ShoppingCart,
@@ -16,7 +23,6 @@ import {
   Clock,
   Users,
 } from "lucide-react";
-
 
 const HomePage = () => {
   const router = useRouter();
@@ -32,32 +38,40 @@ const HomePage = () => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" as const },
+    },
   };
 
   const features = [
     {
       icon: MessageSquare,
       title: "Customer Support",
-      description: "Automate responses to common customer queries 24/7 with intelligent chatbots.",
+      description:
+        "Automate responses to common customer queries 24/7 with intelligent chatbots.",
       color: "text-primary",
     },
     {
       icon: ShoppingCart,
       title: "Order Taking",
-      description: "Accept and process orders directly through WhatsApp with automated workflows.",
+      description:
+        "Accept and process orders directly through WhatsApp with automated workflows.",
       color: "text-success",
     },
     {
       icon: HelpCircle,
       title: "FAQs & Quick Replies",
-      description: "Set up instant responses for frequently asked questions to save time.",
+      description:
+        "Set up instant responses for frequently asked questions to save time.",
       color: "text-warning",
     },
     {
       icon: Bot,
       title: "AI-Powered Replies",
-      description: "Use advanced AI to generate natural, context-aware responses to customers.",
+      description:
+        "Use advanced AI to generate natural, context-aware responses to customers.",
       color: "text-accent",
     },
   ];
@@ -75,7 +89,7 @@ const HomePage = () => {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="relative min-h-[90vh] flex flex-col items-center justify-center px-4 py-20"
+        className="relative min-h-[90vh] flex flex-col items-center justify-center px-4"
       >
         {/* Background decoration */}
         <motion.div
@@ -88,22 +102,37 @@ const HomePage = () => {
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary-glow rounded-full filter blur-3xl" />
         </motion.div>
 
-        <motion.div variants={itemVariants} className="text-center z-10 max-w-4xl mx-auto">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
-            className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6"
-          >
-            <Zap className="h-4 w-4" />
-            <span className="text-sm font-medium">Trusted by 10,000+ businesses</span>
-          </motion.div>
+        <motion.div
+          variants={itemVariants}
+          className="text-center z-10 max-w-4xl mx-auto"
+        >
+          <div className="flex flex-col items-center z-20">
+            <Image
+              src="/logo.png"
+              alt="OrderZap Logo"
+              width={180}
+              height={60}
+              className="drop-shadow-xl"
+              priority
+            />
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
+              className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6"
+            >
+              <Zap className="h-4 w-4" />
+              <span className="text-sm font-medium">
+                Trusted by 10,000+ businesses
+              </span>
+            </motion.div>
+          </div>
 
           <motion.h1
             variants={itemVariants}
             className="text-5xl md:text-7xl font-bold text-foreground mb-6"
           >
-            Welcome to <span className="text-primary">OrderZap</span> 🚀
+            Welcome to <span className="text-primary">OrderZap</span>
           </motion.h1>
 
           <motion.p
@@ -124,15 +153,19 @@ const HomePage = () => {
                 whileHover={{ scale: 1.05 }}
                 className="text-center"
               >
-                <div className="text-3xl md:text-4xl font-bold text-primary">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+                <div className="text-3xl md:text-4xl font-bold text-primary">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {stat.label}
+                </div>
               </motion.div>
             ))}
           </motion.div>
 
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-10"
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
@@ -152,7 +185,9 @@ const HomePage = () => {
                 onClick={() => {
                   setShowFeatures(true);
                   setTimeout(() => {
-                    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+                    document
+                      .getElementById("features")
+                      ?.scrollIntoView({ behavior: "smooth" });
                   }, 100);
                 }}
                 className="px-8 py-6 text-lg border-2 hover:bg-primary/10"
@@ -167,7 +202,7 @@ const HomePage = () => {
         {/* Scroll indicator */}
         <motion.div
           variants={itemVariants}
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+          className="flex justify-center mt-6"
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
         >
@@ -191,7 +226,8 @@ const HomePage = () => {
                 Why Choose <span className="text-primary">OrderZap</span>?
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Everything you need to automate your WhatsApp business communications
+                Everything you need to automate your WhatsApp business
+                communications
               </p>
             </motion.div>
 
@@ -203,9 +239,9 @@ const HomePage = () => {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  whileHover={{ 
+                  whileHover={{
                     scale: 1.05,
-                    transition: { duration: 0.2 }
+                    transition: { duration: 0.2 },
                   }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -218,7 +254,9 @@ const HomePage = () => {
                       >
                         <feature.icon className="h-8 w-8" />
                       </motion.div>
-                      <CardTitle className="text-xl mt-4">{feature.title}</CardTitle>
+                      <CardTitle className="text-xl mt-4">
+                        {feature.title}
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <CardDescription className="text-base">
@@ -231,10 +269,7 @@ const HomePage = () => {
             </motion.div>
 
             {/* Additional Benefits */}
-            <motion.div
-              variants={itemVariants}
-              className="mt-20 text-center"
-            >
+            <motion.div variants={itemVariants} className="mt-20 text-center">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
@@ -242,23 +277,33 @@ const HomePage = () => {
                 >
                   <Clock className="h-12 w-12 text-primary mb-4" />
                   <h3 className="font-semibold text-lg mb-2">5-Minute Setup</h3>
-                  <p className="text-muted-foreground">Get your bot running in minutes, not hours</p>
+                  <p className="text-muted-foreground">
+                    Get your bot running in minutes, not hours
+                  </p>
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   className="flex flex-col items-center"
                 >
                   <Users className="h-12 w-12 text-primary mb-4" />
-                  <h3 className="font-semibold text-lg mb-2">No Code Required</h3>
-                  <p className="text-muted-foreground">Simple interface designed for everyone</p>
+                  <h3 className="font-semibold text-lg mb-2">
+                    No Code Required
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Simple interface designed for everyone
+                  </p>
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   className="flex flex-col items-center"
                 >
                   <Zap className="h-12 w-12 text-primary mb-4" />
-                  <h3 className="font-semibold text-lg mb-2">Instant Deployment</h3>
-                  <p className="text-muted-foreground">Go live with one click</p>
+                  <h3 className="font-semibold text-lg mb-2">
+                    Instant Deployment
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Go live with one click
+                  </p>
                 </motion.div>
               </div>
 
@@ -280,8 +325,6 @@ const HomePage = () => {
           </motion.section>
         )}
       </AnimatePresence>
-
-    
     </div>
   );
 };
