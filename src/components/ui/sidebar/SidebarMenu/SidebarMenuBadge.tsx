@@ -1,10 +1,12 @@
-"use client"; // client
+"use client";
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-// badge
-export const SidebarMenuBadge = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(({ className, ...props }, ref) => {
+export const SidebarMenuBadge = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => {
   return (
     <div
       ref={ref}

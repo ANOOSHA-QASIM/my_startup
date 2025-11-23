@@ -39,7 +39,7 @@ const AuthPage = () => {
   const { signIn, isLoaded: signInLoaded } = useSignIn();
   const { signUp, isLoaded: signUpLoaded } = useSignUp();
 
-  // ✅ Validation
+  // Validation 
   const validateSignup = () => {
     const newErrors: Record<string, string> = {};
     if (!firstName) newErrors.firstName = "First name is required";
@@ -68,7 +68,7 @@ const AuthPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ Email Signup
+  // Email Signup
   const handleSignup = async () => {
     if (!validateSignup()) return;
     if (!signUpLoaded) return;
@@ -82,10 +82,10 @@ const AuthPage = () => {
         lastName,
       });
 
-      // ✅ Send verification code
+      // Send verification code
       await signUp.prepareEmailAddressVerification({
         strategy: "email_code",
-       // 👈 add redirect URL required by Clerk
+       // add redirect URL required by Clerk
       });
 
       // Save user locally
@@ -111,7 +111,7 @@ const AuthPage = () => {
     }
   };
 
-  // ✅ Email Login
+  // Email Login
   const handleLogin = async () => {
     if (!validateLogin()) return;
     if (!signInLoaded) return;
@@ -150,7 +150,7 @@ const AuthPage = () => {
     }
   };
 
-  // ✅ Google OAuth Login/Signup
+  // Google OAuth Login/Signup
   const handleGoogleAuth = async (mode: "login" | "signup") => {
     try {
       const redirectUrl = "/dashboard";
@@ -178,7 +178,7 @@ const AuthPage = () => {
     }
   };
 
-  // 🎨 Animations
+  // Animations
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {

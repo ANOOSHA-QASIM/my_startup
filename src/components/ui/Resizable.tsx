@@ -1,4 +1,4 @@
-"use client"; // Client component for Next.js 15
+"use client";
 
 import { GripVertical } from "lucide-react";
 import * as ResizablePrimitive from "react-resizable-panels";
@@ -26,7 +26,9 @@ const ResizableHandle = ({
   withHandle,
   className,
   ...props
-}: React.ComponentProps<typeof ResizablePrimitive.PanelResizeHandle> & { withHandle?: boolean }) => (
+}: React.ComponentProps<typeof ResizablePrimitive.PanelResizeHandle> & {
+  withHandle?: boolean;
+}) => (
   <ResizablePrimitive.PanelResizeHandle
     className={cn(
       "relative flex w-px items-center justify-center bg-border " +

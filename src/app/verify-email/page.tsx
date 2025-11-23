@@ -16,7 +16,7 @@ import {
 import { Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toasts";
 
-// 🟢 Clerk import
+// Clerk import
 import { useSignUp } from "@clerk/nextjs";
 
 export default function VerifyEmailPage() {
@@ -30,7 +30,7 @@ export default function VerifyEmailPage() {
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ✅ Safe check for Clerk hooks
+    // Safe check for Clerk hooks
     if (!isLoaded || !signUp) return;
 
     setIsVerifying(true);
@@ -84,7 +84,7 @@ export default function VerifyEmailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-subtle flex items-center justify-center p-4 relative overflow-hidden">
-      {/* 🌟 Floating Icon */}
+      {/* Floating Icon */}
       <motion.div
         className="absolute top-10 right-10"
         animate={{ rotate: 360 }}

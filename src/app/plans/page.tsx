@@ -80,7 +80,7 @@ const Plans = () => {
     setIsProcessing(true);
 
     try {
-      // fake API call
+      // dummy API call
       await fetch("https://dummyapi.com/payment/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -125,7 +125,6 @@ const Plans = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -182,7 +181,9 @@ const Plans = () => {
                     <CardTitle className="text-2xl mb-2">{plan.name}</CardTitle>
                     <div className="flex items-baseline justify-center gap-1">
                       <span className="text-4xl font-bold">{plan.price}</span>
-                      <span className="text-muted-foreground">{plan.period}</span>
+                      <span className="text-muted-foreground">
+                        {plan.period}
+                      </span>
                     </div>
                   </CardHeader>
 

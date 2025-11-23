@@ -1,4 +1,4 @@
-"use client"; // client hook
+"use client";
 
 import { useState, useEffect } from "react";
 
@@ -15,7 +15,7 @@ export function useIsMobile() {
     };
 
     mql.addEventListener("change", handleChange);
-    handleChange(); // initial check
+    handleChange();
 
     return () => mql.removeEventListener("change", handleChange);
   }, []);

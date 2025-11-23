@@ -1,4 +1,4 @@
-"use client"; // client hook
+"use client"; 
 
 import { useState, useEffect } from "react";
 import type { ToastActionElement, ToastProps } from "@/components/ui/Toast";

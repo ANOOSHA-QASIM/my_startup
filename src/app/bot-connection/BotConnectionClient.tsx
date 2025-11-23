@@ -1,12 +1,24 @@
 "use client";
-export const dynamic = "force-dynamic"; // Client-side render only
+export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion, Variants } from "framer-motion";
 import { Button } from "@/components/ui/CustomButton";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Link2, Copy, CheckCircle, Smartphone, MessageCircle } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import {
+  Link2,
+  Copy,
+  CheckCircle,
+  Smartphone,
+  MessageCircle,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toasts";
 import { firestore } from "@/../lib/firebaseClient";
 import { doc, getDoc } from "firebase/firestore";
@@ -14,7 +26,7 @@ import { doc, getDoc } from "firebase/firestore";
 export default function BotConnection() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-  const [botId, setBotId] = useState(""); 
+  const [botId, setBotId] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
   const [businessId, setBusinessId] = useState<string | null>(null);
 
@@ -22,13 +34,13 @@ export default function BotConnection() {
   const { toast } = useToast();
   const router = useRouter();
 
-  // ✅ Get businessId safely on client-side
+  // Get businessId safely on client-side
   useEffect(() => {
     const id = searchParams.get("businessId");
     setBusinessId(id);
   }, [searchParams]);
 
-  // ✅ Fetch botId & webhookUrl dynamically using businessId
+  // Fetch botId & webhookUrl dynamically using businessId
   useEffect(() => {
     if (!businessId) return;
 
@@ -43,7 +55,10 @@ export default function BotConnection() {
           setWebhookUrl(data.webhookUrl);
           console.log("Dynamic botId loaded:", data.botId);
         } else {
-          toast({ title: "Error", description: "Business document not found." });
+          toast({
+            title: "Error",
+            description: "Business document not found.",
+          });
         }
       } catch (error) {
         console.error("Error fetching bot data:", error);
@@ -53,7 +68,7 @@ export default function BotConnection() {
     fetchBotData();
   }, [businessId, toast]);
 
-  // ✅ Connect button triggers n8n webhook
+  // Connect button triggers n8n webhook
   const handleConnect = async () => {
     if (!botId || !webhookUrl) {
       toast({
@@ -77,19 +92,25 @@ export default function BotConnection() {
 
       if (res.ok) {
         setIsConnected(true);
-        toast({ title: "Bot Connected!", description: "Your WhatsApp bot is now active" });
+        toast({
+          title: "Bot Connected!",
+          description: "Your WhatsApp bot is now active",
+        });
       } else {
         throw new Error(data.error || "Connection failed");
       }
     } catch (error: any) {
       console.error("Error connecting bot:", error);
-      toast({ title: "Connection Failed", description: error.message || "Try again." });
+      toast({
+        title: "Connection Failed",
+        description: error.message || "Try again.",
+      });
     } finally {
       setIsConnecting(false);
     }
   };
 
-  // ✅ Copy webhook URL to clipboard
+  // Copy webhook URL to clipboard
   const copyToClipboard = () => {
     navigator.clipboard.writeText(webhookUrl);
     toast({ title: "Copied!", description: "Webhook URL copied to clipboard" });
@@ -98,7 +119,11 @@ export default function BotConnection() {
   // Framer Motion Variants
   const cardVariants: Variants = {
     hidden: { scale: 0.95, opacity: 0 },
-    visible: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 100 } },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 },
+    },
     hover: { scale: 1.02, transition: { type: "spring", stiffness: 400 } },
   };
 
@@ -112,31 +137,64 @@ export default function BotConnection() {
   };
 
   const steps = [
-    { icon: Smartphone, title: "Open WhatsApp Business", description: "Open WhatsApp Business app on your phone" },
-    { icon: Link2, title: "Link Device", description: "Go to Settings → Linked Devices → Link a Device" },
-    { icon: MessageCircle, title: "Scan QR Code", description: "Scan the QR code shown below to connect" },
+    {
+      icon: Smartphone,
+      title: "Open WhatsApp Business",
+      description: "Open WhatsApp Business app on your phone",
+    },
+    {
+      icon: Link2,
+      title: "Link Device",
+      description: "Go to Settings → Linked Devices → Link a Device",
+    },
+    {
+      icon: MessageCircle,
+      title: "Scan QR Code",
+      description: "Scan the QR code shown below to connect",
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-20 lg:ml-64 p-6">
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="ml-20 lg:ml-64 p-6"
+      >
         <div className="max-w-4xl mx-auto">
-          <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-2">Bot Connection</h1>
-            <p className="text-muted-foreground">Connect your WhatsApp Business account to the bot</p>
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="mb-8"
+          >
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Bot Connection
+            </h1>
+            <p className="text-muted-foreground">
+              Connect your WhatsApp Business account to the bot
+            </p>
           </motion.div>
 
           {/* Webhook Card */}
           {webhookUrl && (
-            <motion.div variants={cardVariants} initial="hidden" animate="visible" whileHover="hover">
+            <motion.div
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
+            >
               <Card className="shadow-card">
                 <CardHeader>
                   <CardTitle>Webhook Configuration</CardTitle>
-                  <CardDescription>Use this webhook URL in your WhatsApp Business API settings</CardDescription>
+                  <CardDescription>
+                    Use this webhook URL in your WhatsApp Business API settings
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="p-4 bg-secondary rounded-lg flex justify-between items-center">
-                    <code className="font-mono text-sm break-all flex-1">{webhookUrl}</code>
+                    <code className="font-mono text-sm break-all flex-1">
+                      {webhookUrl}
+                    </code>
                     <Button variant="ghost" size="sm" onClick={copyToClipboard}>
                       <Copy className="h-4 w-4" />
                     </Button>
@@ -150,7 +208,9 @@ export default function BotConnection() {
           <Card className="shadow-card">
             <CardHeader>
               <CardTitle>Connection Steps</CardTitle>
-              <CardDescription>Follow these steps to connect your WhatsApp</CardDescription>
+              <CardDescription>
+                Follow these steps to connect your WhatsApp
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {steps.map((step, index) => (
@@ -167,7 +227,9 @@ export default function BotConnection() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium mb-1">{step.title}</h3>
-                    <p className="text-sm text-muted-foreground">{step.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {step.description}
+                    </p>
                   </div>
                   <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full text-sm font-medium text-primary">
                     {index + 1}
@@ -178,26 +240,42 @@ export default function BotConnection() {
           </Card>
 
           {/* QR Code & Connect Button */}
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }}>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
             <Card className="shadow-card">
               <CardHeader className="text-center">
                 <CardTitle>QR Code</CardTitle>
-                <CardDescription>Scan this code with WhatsApp Business</CardDescription>
+                <CardDescription>
+                  Scan this code with WhatsApp Business
+                </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col items-center space-y-4">
                 <motion.div
                   animate={isConnecting ? { rotate: 360 } : {}}
-                  transition={{ duration: 2, repeat: isConnecting ? Infinity : 0, ease: "linear" }}
+                  transition={{
+                    duration: 2,
+                    repeat: isConnecting ? Infinity : 0,
+                    ease: "linear",
+                  }}
                   className="w-48 h-48 bg-gradient-subtle rounded-lg flex items-center justify-center border-2 border-primary"
                 >
                   {isConnected ? (
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200 }}>
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring", stiffness: 200 }}
+                    >
                       <CheckCircle className="h-24 w-24 text-success" />
                     </motion.div>
                   ) : (
                     <div className="text-center">
                       <MessageCircle className="h-12 w-12 text-primary mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">QR Code will appear here</p>
+                      <p className="text-sm text-muted-foreground">
+                        QR Code will appear here
+                      </p>
                     </div>
                   )}
                 </motion.div>
@@ -211,14 +289,22 @@ export default function BotConnection() {
                 >
                   {isConnecting ? (
                     <span className="flex items-center gap-2">
-                      <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                      >
                         <Link2 className="h-4 w-4" />
                       </motion.div>
                       Connecting...
                     </span>
                   ) : isConnected ? (
                     <span className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4" />Connected
+                      <CheckCircle className="h-4 w-4" />
+                      Connected
                     </span>
                   ) : (
                     "Connect Bot"
@@ -226,7 +312,11 @@ export default function BotConnection() {
                 </Button>
 
                 {isConnected && (
-                  <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-sm text-success font-medium">
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-sm text-success font-medium"
+                  >
                     Your WhatsApp Bot is active and ready to respond!
                   </motion.p>
                 )}

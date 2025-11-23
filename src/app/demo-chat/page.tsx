@@ -4,10 +4,16 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/CustomButton";
 import { Input } from "@/components/ui/Input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 import { Send, Bot, User, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toasts";
-import { useRouter } from "next/navigation"; // ✅ Next.js navigation
+import { useRouter } from "next/navigation";
 
 interface Message {
   id: string;
@@ -29,7 +35,7 @@ export default function DemoChat() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const router = useRouter(); // ✅ Next.js navigation hook
+  const router = useRouter();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -120,8 +126,6 @@ export default function DemoChat() {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-  
-
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -129,9 +133,17 @@ export default function DemoChat() {
       >
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mb-6">
-            <h1 className="text-3xl font-bold text-foreground mb-2">Demo Chat</h1>
-            <p className="text-muted-foreground">Test your WhatsApp Bot responses in real-time</p>
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="mb-6"
+          >
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Demo Chat
+            </h1>
+            <p className="text-muted-foreground">
+              Test your WhatsApp Bot responses in real-time
+            </p>
           </motion.div>
 
           {/* Chat Card */}
@@ -149,7 +161,12 @@ export default function DemoChat() {
                     </CardDescription>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" onClick={handleReset} className="hover:bg-secondary">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleReset}
+                  className="hover:bg-secondary"
+                >
                   <RefreshCw className="h-4 w-4" />
                 </Button>
               </div>
@@ -165,10 +182,24 @@ export default function DemoChat() {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+                    className={`flex ${
+                      message.sender === "user"
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
                   >
-                    <div className={`flex items-start gap-2 max-w-[70%] ${message.sender === "user" ? "flex-row-reverse" : ""}`}>
-                      <div className={`p-1.5 rounded-full ${message.sender === "user" ? "bg-primary" : "bg-secondary"}`}>
+                    <div
+                      className={`flex items-start gap-2 max-w-[70%] ${
+                        message.sender === "user" ? "flex-row-reverse" : ""
+                      }`}
+                    >
+                      <div
+                        className={`p-1.5 rounded-full ${
+                          message.sender === "user"
+                            ? "bg-primary"
+                            : "bg-secondary"
+                        }`}
+                      >
                         {message.sender === "user" ? (
                           <User className="h-4 w-4 text-primary-foreground" />
                         ) : (
@@ -186,7 +217,10 @@ export default function DemoChat() {
                       >
                         <p className="text-sm">{message.text}</p>
                         <p className="text-xs opacity-70 mt-1">
-                          {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          {message.timestamp.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </p>
                       </motion.div>
                     </div>
@@ -196,7 +230,11 @@ export default function DemoChat() {
 
               {/* Typing animation */}
               {isTyping && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center gap-2"
+                >
                   <div className="p-1.5 rounded-full bg-secondary">
                     <Bot className="h-4 w-4 text-secondary-foreground" />
                   </div>
@@ -206,7 +244,11 @@ export default function DemoChat() {
                         <motion.span
                           key={i}
                           animate={{ y: [0, -5, 0] }}
-                          transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.1 }}
+                          transition={{
+                            duration: 0.6,
+                            repeat: Infinity,
+                            delay: i * 0.1,
+                          }}
                           className="w-2 h-2 bg-secondary-foreground/50 rounded-full"
                         />
                       ))}
@@ -247,11 +289,19 @@ export default function DemoChat() {
           </Card>
 
           {/* Tip Card */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-6"
+          >
             <Card className="shadow-card bg-accent/50">
               <CardContent className="py-4">
                 <p className="text-sm text-muted-foreground">
-                  💡 <strong>Tip:</strong> This is a demo environment. In production, your bot will automatically respond to real WhatsApp messages based on your configured workflows and AI settings.
+                  💡 <strong>Tip:</strong> This is a demo environment. In
+                  production, your bot will automatically respond to real
+                  WhatsApp messages based on your configured workflows and AI
+                  settings.
                 </p>
               </CardContent>
             </Card>

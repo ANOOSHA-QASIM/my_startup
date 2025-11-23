@@ -1,4 +1,4 @@
-"use client"; // client component
+"use client";
 
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -39,11 +39,20 @@ const Sidebar = () => {
   const handleLogout = () => router.push("/"); // logout redirect
 
   const sidebarVariants: Variants = {
-    open: { width: "256px", transition: { type: "spring", stiffness: 300, damping: 30 } },
-    closed: { width: "80px", transition: { type: "spring", stiffness: 300, damping: 30 } },
+    open: {
+      width: "256px",
+      transition: { type: "spring", stiffness: 300, damping: 30 },
+    },
+    closed: {
+      width: "80px",
+      transition: { type: "spring", stiffness: 300, damping: 30 },
+    },
   };
 
-  const itemVariants: Variants = { open: { opacity: 1, x: 0 }, closed: { opacity: 0, x: -20 } };
+  const itemVariants: Variants = {
+    open: { opacity: 1, x: 0 },
+    closed: { opacity: 0, x: -20 },
+  };
 
   return (
     <>
@@ -57,27 +66,26 @@ const Sidebar = () => {
           <div className="p-4 flex items-center justify-between">
             <AnimatePresence>
               {isOpen && (
-<div className="flex items-center gap-2">
-  <Image
-  src="/logo.png"
-  alt="OrderZap Logo"
-  width={75}
-  height={75}
-  className="object-contain" // brightness increase
-/>
+                <div className="flex items-center gap-2">
+                  <Image
+                    src="/logo.png"
+                    alt="OrderZap Logo"
+                    width={75}
+                    height={75}
+                    className="object-contain"
+                  />
 
-  {isOpen && (
-    <motion.span
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -10 }}
-      className="font-bold text-lg whitespace-nowrap"
-    >
-      OrderZap
-    </motion.span>
-  )}
-</div>
-
+                  {isOpen && (
+                    <motion.span
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      className="font-bold text-lg whitespace-nowrap"
+                    >
+                      OrderZap
+                    </motion.span>
+                  )}
+                </div>
               )}
             </AnimatePresence>
             <Button
@@ -86,7 +94,11 @@ const Sidebar = () => {
               onClick={() => setIsOpen(!isOpen)}
               className="text-primary-foreground hover:bg-primary-glow"
             >
-              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </Button>
           </div>
 

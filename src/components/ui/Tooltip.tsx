@@ -1,4 +1,4 @@
-"use client"; // client-side component
+"use client";
 
 import * as React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";

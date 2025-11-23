@@ -40,14 +40,14 @@ const BusinessSetup = () => {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [botPurpose, setBotPurpose] = useState("");
   const [botCategory, setBotCategory] = useState("");
-  const [itemType, setItemType] = useState(""); // ✅ Menu / Services / Product / Other
-  const [otherDescription, setOtherDescription] = useState(""); // ✅ For "Other"
+  const [itemType, setItemType] = useState(""); 
+  const [otherDescription, setOtherDescription] = useState(""); 
   const [menuItems, setMenuItems] = useState([{ name: "", price: "" }]);
   const [plan, setPlan] = useState("free");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  // ✅ Update item name or price
+  // Update item name or price
   const handleItemChange = (
     index: number,
     field: "name" | "price",
@@ -58,12 +58,12 @@ const BusinessSetup = () => {
     setMenuItems(newItems);
   };
 
-  // ✅ Add new item
+  // Add new item
   const addMenuItem = () => {
     setMenuItems([...menuItems, { name: "", price: "" }]);
   };
 
-  // ✅ Remove item
+  // Remove item
   const removeMenuItem = (index: number) => {
     const newItems = menuItems.filter((_, i) => i !== index);
     setMenuItems(newItems);
@@ -84,7 +84,7 @@ const BusinessSetup = () => {
     setLoading(true);
 
     try {
-      // ✅ Generate unique bot data
+      // Generate unique bot data
       const botData = {
         botId:
           "BOT-" + Math.random().toString(36).substring(2, 9).toUpperCase(),
@@ -94,7 +94,7 @@ const BusinessSetup = () => {
         botCategory,
       };
 
-      // ✅ Save to Firestore
+      // Save to Firestore
       const docRef = await addDoc(collection(firestore, "businesses"), {
         businessName,
         whatsappNumber,
@@ -102,7 +102,7 @@ const BusinessSetup = () => {
         botCategory,
         itemType,
         otherDescription,
-        menuItems, // full array of name & price
+        menuItems,
         plan,
         botId: botData.botId,
         webhookUrl: botData.webhookUrl,
@@ -232,7 +232,7 @@ const BusinessSetup = () => {
                   </Select>
                 </div>
 
-                {/* ✅ Item Type */}
+                {/* Item Type */}
                 <div className="space-y-2">
                   <Label>
                     <List className="inline h-4 w-4 mr-2" /> Item Type
@@ -250,7 +250,7 @@ const BusinessSetup = () => {
                   </Select>
                 </div>
 
-                {/* ✅ If "Other" selected */}
+                {/* If "Other" selected */}
                 {itemType === "other" && (
                   <div className="space-y-2">
                     <Label>Describe your item type</Label>
@@ -262,7 +262,7 @@ const BusinessSetup = () => {
                   </div>
                 )}
 
-                {/* ✅ Menu Listing with Price */}
+                {/* Menu Listing with Price */}
                 <div className="space-y-3">
                   <Label>
                     <List className="inline h-4 w-4 mr-2" /> Items with Price

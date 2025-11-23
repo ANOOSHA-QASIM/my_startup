@@ -1,4 +1,3 @@
-// page.tsx
 import { Suspense } from "react";
 import BotConnectionClient from "./BotConnectionClient";
 

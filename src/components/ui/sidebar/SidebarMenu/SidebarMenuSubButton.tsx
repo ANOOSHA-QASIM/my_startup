@@ -1,13 +1,16 @@
-"use client"; // client
+"use client";
 
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cn } from "@/lib/utils";
 
-// sub button
 export const SidebarMenuSubButton = React.forwardRef<
   HTMLAnchorElement,
-  React.ComponentProps<"a"> & { asChild?: boolean; size?: "sm" | "md"; isActive?: boolean }
+  React.ComponentProps<"a"> & {
+    asChild?: boolean;
+    size?: "sm" | "md";
+    isActive?: boolean;
+  }
 >(({ asChild = false, size = "md", isActive, className, ...props }, ref) => {
   const Comp: any = asChild ? Slot : "a";
   return (

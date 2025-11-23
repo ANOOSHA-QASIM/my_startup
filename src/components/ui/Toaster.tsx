@@ -1,11 +1,18 @@
-"use client"; // client-side component
+"use client";
 
 import { useToast } from "@/hooks/use-toasts";
-import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/Toast";
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from "@/components/ui/Toast";
 
 // Toaster component to render all toasts
 export function Toaster() {
-  const { toasts } = useToast(); // get toasts from hook
+  const { toasts } = useToast();
 
   return (
     <ToastProvider>

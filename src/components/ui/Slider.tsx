@@ -1,4 +1,3 @@
-// "use client" is required for client-side interactivity
 "use client";
 
 import * as React from "react";
@@ -13,12 +12,14 @@ const Slider = React.forwardRef<
   <SliderPrimitive.Root
     ref={ref}
     // container styling
-    className={cn("relative flex w-full touch-none select-none items-center", className)}
+    className={cn(
+      "relative flex w-full touch-none select-none items-center",
+      className
+    )}
     {...props}
   >
     {/* Track - background line */}
     <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
-      {/* Range - filled part */}
       <SliderPrimitive.Range className="absolute h-full bg-primary" />
     </SliderPrimitive.Track>
 

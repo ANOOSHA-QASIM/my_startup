@@ -1,11 +1,13 @@
-"use client"; // client
+"use client";
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "./SidebarProvider";
 
-// rail
-export const SidebarRail = React.forwardRef<HTMLButtonElement, React.ComponentProps<"button">>(({ className, ...props }, ref) => {
+export const SidebarRail = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<"button">
+>(({ className, ...props }, ref) => {
   const { toggleSidebar } = useSidebar();
 
   return (

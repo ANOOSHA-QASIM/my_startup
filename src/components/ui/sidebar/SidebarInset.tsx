@@ -1,10 +1,12 @@
-"use client"; // client
+"use client";
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-// inset
-export const SidebarInset = React.forwardRef<HTMLDivElement, React.ComponentProps<"main">>(({ className, ...props }, ref) => {
+export const SidebarInset = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"main">
+>(({ className, ...props }, ref) => {
   return (
     <main
       ref={ref}

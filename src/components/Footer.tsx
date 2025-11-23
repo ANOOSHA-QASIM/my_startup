@@ -1,12 +1,12 @@
-"use client"; // client component
+"use client";
 
 import { motion } from "framer-motion";
 
 const Footer = () => {
   return (
     <motion.footer
-      initial={{ opacity: 0 }} // start fade
-      animate={{ opacity: 1 }} // show fade
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ delay: 0.5 }}
       className="bg-card border-t border-border py-6 mt-20"
     >

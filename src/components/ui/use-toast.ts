@@ -1,5 +1,5 @@
-"use client"; // client hook
+"use client";
 
 import { useToast, toast } from "@/hooks/use-toasts";
 
-export { useToast, toast }; // export hooks
+export { useToast, toast };

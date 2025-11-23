@@ -1,9 +1,9 @@
-"use client"; // Next.js ke liye client component
+"use client";
 
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot"; // Optional wrapper for "asChild" pattern
-import { cva, type VariantProps } from "class-variance-authority"; // For variant-based styling
-import { cn } from "@/lib/utils"; // Utility for conditional classNames
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 // Button styles with variants and sizes
 const buttonVariants = cva(
@@ -11,14 +11,20 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-       default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-elegant hover:shadow-glow",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        default:
+          "bg-primary text-primary-foreground hover:bg-primary/90 shadow-elegant hover:shadow-glow",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        gradient: "bg-gradient-primary text-primary-foreground hover:opacity-90 shadow-elegant hover:shadow-glow",
-        whatsapp: "bg-primary text-primary-foreground hover:bg-primary-glow shadow-elegant hover:shadow-glow transform hover:scale-105 transition-transform",
+        gradient:
+          "bg-gradient-primary text-primary-foreground hover:opacity-90 shadow-elegant hover:shadow-glow",
+        whatsapp:
+          "bg-primary text-primary-foreground hover:bg-primary-glow shadow-elegant hover:shadow-glow transform hover:scale-105 transition-transform",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -38,16 +44,16 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean; // Allows using a different component instead of <button>
+  asChild?: boolean;
 }
 
 // Button component
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"; // Use Slot if asChild, else native button
+    const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))} // Apply variant + size + custom class
+        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
       />
@@ -55,6 +61,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = "Button"; // Name for React DevTools
+Button.displayName = "Button";
 
 export { Button, buttonVariants };

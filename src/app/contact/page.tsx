@@ -1,7 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
@@ -20,16 +26,17 @@ const Contact = () => {
     companyName: "",
     email: "",
     whatsapp: "",
-    message: ""
+    message: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Simulate form submission
     toast({
-      title: "Message Sent! ✅",
-      description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+      title: "Message Sent! ",
+      description:
+        "Thank you for contacting us. We'll get back to you within 24 hours.",
     });
 
     // Reset form
@@ -39,20 +46,21 @@ const Contact = () => {
       companyName: "",
       email: "",
       whatsapp: "",
-      message: ""
+      message: "",
     });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -66,14 +74,18 @@ const Contact = () => {
           >
             <Button
               variant="ghost"
-              onClick={() => router.push('/faq')}
+              onClick={() => router.push("/faq")}
               className="mb-4"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to FAQ
             </Button>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Contact Us</h1>
-            <p className="text-muted-foreground">Get in touch with our support team. We're here to help!</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Contact Us
+            </h1>
+            <p className="text-muted-foreground">
+              Get in touch with our support team. We're here to help!
+            </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -86,7 +98,9 @@ const Contact = () => {
               <Card className="shadow-card">
                 <CardHeader>
                   <CardTitle>Send us a Message</CardTitle>
-                  <CardDescription>Fill out the form below and we'll respond within 24 hours</CardDescription>
+                  <CardDescription>
+                    Fill out the form below and we'll respond within 24 hours
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-4">
@@ -184,7 +198,9 @@ const Contact = () => {
               <Card className="shadow-card">
                 <CardHeader>
                   <CardTitle>Direct Contact</CardTitle>
-                  <CardDescription>Reach out to us directly through these channels</CardDescription>
+                  <CardDescription>
+                    Reach out to us directly through these channels
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="flex items-start gap-4">
@@ -196,7 +212,7 @@ const Contact = () => {
                       <p className="text-muted-foreground text-sm mb-2">
                         Get help via email within 24 hours
                       </p>
-                      <a 
+                      <a
                         href="mailto:anushatech333@gmail.com"
                         className="text-primary hover:underline font-medium"
                       >
@@ -214,7 +230,7 @@ const Contact = () => {
                       <p className="text-muted-foreground text-sm mb-2">
                         Chat with us directly on WhatsApp
                       </p>
-                      <a 
+                      <a
                         href="https://wa.me/923192955162"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -241,7 +257,8 @@ const Contact = () => {
                   </p>
                   <div className="mt-4 pt-4 border-t border-primary/20">
                     <p className="text-sm text-muted-foreground">
-                      💬 <strong>Need immediate help?</strong> Premium users get priority support with response times under 2 hours!
+                      💬 <strong>Need immediate help?</strong> Premium users get
+                      priority support with response times under 2 hours!
                     </p>
                   </div>
                 </CardContent>

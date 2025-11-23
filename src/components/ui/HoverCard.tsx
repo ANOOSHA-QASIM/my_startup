@@ -1,4 +1,4 @@
-"use client"; // Next.js 15 ke liye client component
+"use client";
 
 import * as React from "react";
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card";

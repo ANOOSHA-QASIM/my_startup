@@ -1,5 +1,5 @@
 "use client";
-import { useUser } from "@clerk/nextjs"; // ✅ Clerk hook
+import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -33,7 +33,7 @@ interface BotStatus {
 
 const Dashboard = () => {
   const router = useRouter();
-  const { user } = useUser(); // ✅ Clerk user data
+  const { user } = useUser();
   const [botStatus, setBotStatus] = useState<BotStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("User");
@@ -41,9 +41,12 @@ const Dashboard = () => {
   useEffect(() => {
     fetchBotStatus();
 
-    // ✅ Clerk user data ya localStorage data
     if (user) {
-      setUserName(user.firstName || user.fullName || user.emailAddresses[0]?.emailAddress.split("@")[0]);
+      setUserName(
+        user.firstName ||
+          user.fullName ||
+          user.emailAddresses[0]?.emailAddress.split("@")[0]
+      );
       localStorage.setItem(
         "user",
         JSON.stringify({ name: user.firstName || user.fullName || "User" })
@@ -56,7 +59,7 @@ const Dashboard = () => {
     }
   }, [user]);
 
-  // ✅ Dummy API
+  // Dummy API
   const fetchBotStatus = async () => {
     setTimeout(() => {
       setBotStatus({
@@ -71,8 +74,7 @@ const Dashboard = () => {
     }, 1000);
   };
 
-
-  // ✅ Framer Motion Variants
+  // Framer Motion Variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -189,9 +191,7 @@ const Dashboard = () => {
                   >
                     <CreditCard className="h-8 w-8 text-primary" />
                   </motion.div>
-                  <CardTitle className="text-xl">
-                    Manage Subscription
-                  </CardTitle>
+                  <CardTitle className="text-xl">Manage Subscription</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   <CardDescription>
