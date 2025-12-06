@@ -13,12 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/Tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { MessageCircle, Bot, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toasts";
 import { useSignIn, useSignUp } from "@clerk/nextjs";
@@ -39,7 +34,7 @@ const AuthPage = () => {
   const { signIn, isLoaded: signInLoaded } = useSignIn();
   const { signUp, isLoaded: signUpLoaded } = useSignUp();
 
-  // Validation 
+  // Validation
   const validateSignup = () => {
     const newErrors: Record<string, string> = {};
     if (!firstName) newErrors.firstName = "First name is required";
@@ -50,8 +45,7 @@ const AuthPage = () => {
     if (!signupPassword) newErrors.signupPassword = "Password is required";
     else if (signupPassword.length < 6)
       newErrors.signupPassword = "Password must be at least 6 characters";
-    if (!confirmPassword)
-      newErrors.confirmPassword = "Please confirm password";
+    if (!confirmPassword) newErrors.confirmPassword = "Please confirm password";
     else if (signupPassword !== confirmPassword)
       newErrors.confirmPassword = "Passwords do not match";
     setErrors(newErrors);
@@ -85,7 +79,7 @@ const AuthPage = () => {
       // Send verification code
       await signUp.prepareEmailAddressVerification({
         strategy: "email_code",
-       // add redirect URL required by Clerk
+        // add redirect URL required by Clerk
       });
 
       // Save user locally
@@ -124,10 +118,7 @@ const AuthPage = () => {
       });
 
       if (result.status === "complete") {
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ name: loginEmail })
-        );
+        localStorage.setItem("user", JSON.stringify({ name: loginEmail }));
         toast({
           title: "Welcome back! 👋",
           description: "You’ve successfully logged in.",
@@ -189,7 +180,11 @@ const AuthPage = () => {
 
   const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 },
+    },
   };
 
   return (

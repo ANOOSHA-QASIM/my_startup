@@ -40,8 +40,8 @@ const BusinessSetup = () => {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [botPurpose, setBotPurpose] = useState("");
   const [botCategory, setBotCategory] = useState("");
-  const [itemType, setItemType] = useState(""); 
-  const [otherDescription, setOtherDescription] = useState(""); 
+  const [itemType, setItemType] = useState("");
+  const [otherDescription, setOtherDescription] = useState("");
   const [menuItems, setMenuItems] = useState([{ name: "", price: "" }]);
   const [plan, setPlan] = useState("free");
   const [loading, setLoading] = useState(false);
